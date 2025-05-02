@@ -1,6 +1,7 @@
 # Kalsima Backend
 
 [![Donate](https://img.shields.io/badge/Donate-GitHub%20Sponsors-PURPLE)](https://github.com/sponsors/Kalsima)
+[![Deploy](https://github.com/mohibalkal/backend/actions/workflows/deploy.yml/badge.svg)](https://github.com/mohibalkal/backend/actions/workflows/deploy.yml)
 
 
 Kalsima Backend is a from scratch rewrite for the old Fastify and MikroOrm version with backwards compatibility!
