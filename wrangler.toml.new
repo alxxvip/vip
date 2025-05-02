@@ -1,0 +1,4 @@
+name = "backend"
+main = "_worker.js"
+compatibility_date = "2025-03-05"
+compatibility_flags = ["nodejs_compat"]
