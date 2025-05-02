@@ -1,45 +1,96 @@
-// Define global variables needed by the application before importing anything else
-globalThis.__dirname = '/';
-globalThis.__filename = '/index.js';
+// ملف العامل الرئيسي لـ Cloudflare Pages
 
-// Define process.cwd() if it doesn't exist
-if (typeof process === 'undefined') {
-  globalThis.process = { cwd: () => '/' };
-} else if (typeof process.cwd !== 'function') {
-  process.cwd = () => '/';
+// تكوين CORS
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+};
+
+// مسارات API البسيطة
+const routes = {
+  // الصفحة الرئيسية
+  '/': () => ({
+    message: 'Backend is working as expected',
+    version: '1.0.0',
+    timestamp: new Date().toISOString()
+  }),
+  
+  // فحص الصحة
+  '/healthcheck': () => ({
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  }),
+  
+  // معلومات عن API
+  '/api': () => ({
+    name: 'Kalsima Backend API',
+    version: '1.0.0',
+    endpoints: [
+      { path: '/', description: 'API information' },
+      { path: '/healthcheck', description: 'Health check endpoint' },
+      { path: '/api', description: 'API documentation' }
+    ]
+  })
+};
+
+// دالة للتعامل مع طلبات OPTIONS (preflight CORS)
+function handleOptions() {
+  return new Response(null, {
+    headers: corsHeaders
+  });
 }
 
-// Define path module functions if they don't exist
-if (typeof path === 'undefined') {
-  globalThis.path = {
-    resolve: (...args) => args.join('/').replace(/\/+/g, '/'),
-    dirname: (path) => path.split('/').slice(0, -1).join('/') || '/',
-    join: (...args) => args.join('/').replace(/\/+/g, '/'),
-    // Add additional path functions that might be used
-    basename: (path, ext) => {
-      const base = path.split('/').pop() || '';
-      return ext && base.endsWith(ext) ? base.slice(0, -ext.length) : base;
-    }
+// دالة للتعامل مع المسارات غير الموجودة
+function handleNotFound(path) {
+  return {
+    error: 'Not Found',
+    message: `Path ${path} not found`,
+    status: 404
   };
 }
 
-// Export the worker function
+// تصدير دالة العامل
 export default {
   async fetch(request, env, ctx) {
     try {
-      // Make sure __dirname is defined before importing the worker
-      if (typeof __dirname === 'undefined') {
-        globalThis.__dirname = '/';
+      // التعامل مع طلبات OPTIONS لـ CORS
+      if (request.method === 'OPTIONS') {
+        return handleOptions();
       }
       
-      // Import the original worker
-      const { default: worker } = await import('./dist/_worker.js/index.js');
-      return worker.fetch(request, env, ctx);
+      // الحصول على المسار
+      const url = new URL(request.url);
+      const path = url.pathname;
+      
+      // البحث عن معالج المسار
+      const handler = routes[path];
+      const responseData = handler ? handler() : handleNotFound(path);
+      
+      // تحديد حالة الاستجابة
+      const status = responseData.status || 200;
+      
+      // إنشاء استجابة JSON
+      return new Response(JSON.stringify(responseData), {
+        status,
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        }
+      });
     } catch (error) {
-      console.error('Error loading worker:', error);
-      return new Response(`Server Error: ${error.message}`, { 
+      // التعامل مع الأخطاء
+      console.error('Worker error:', error);
+      
+      return new Response(JSON.stringify({
+        error: 'Internal Server Error',
+        message: error.message
+      }), {
         status: 500,
-        headers: { 'Content-Type': 'text/plain' }
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        }
       });
     }
   }
