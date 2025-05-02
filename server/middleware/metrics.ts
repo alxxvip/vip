@@ -1,5 +1,5 @@
-import { recordHttpRequest } from '~/utils/metrics';
-import { scopedLogger } from '~/utils/logger';
+import { recordHttpRequest } from '../utils/metrics';
+import { scopedLogger } from '../utils/logger';
 
 const log = scopedLogger('metrics-middleware');
 

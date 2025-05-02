@@ -1,6 +1,6 @@
 import { Counter, register, collectDefaultMetrics, Histogram, Summary } from 'prom-client';
 import { prisma } from './prisma';
-import { scopedLogger } from '~/utils/logger';
+import { scopedLogger } from './logger';
 import fs from 'fs';
 import path from 'path';
 
