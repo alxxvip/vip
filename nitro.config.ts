@@ -6,6 +6,10 @@ import { version } from "./server/utils/config";
 export default defineNitroConfig({
   srcDir: "server",
   preset: "cloudflare-pages",
+  output: {
+    dir: ".output",
+    publicDir: ".output/public"
+  },
   compatibilityDate: "2025-03-05",
   experimental: {
     asyncContext: true,
@@ -20,9 +24,7 @@ export default defineNitroConfig({
   },
   // Configuración específica para Cloudflare
   cloudflare: {
-    pages: {
-      compatibilityFlags: ["nodejs_compat"]
-    }
+    // Configuración para Cloudflare Pages
   },
   runtimeConfig: {
     public: {

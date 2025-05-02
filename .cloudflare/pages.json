@@ -1,5 +1,6 @@
 {
   "buildConfig": {
-    "nodeVersion": "20.5.0"
+    "nodeVersion": "20.0.0",
+    "rootDir": ".output/public"
   }
 }

@@ -2,10 +2,11 @@
 nodejs_compat = true
 
 [build]
-node_version = "20.5.0"
+node_version = "20.0.0"
+pages_build_output_dir = ".output/public"
 
 [vars]
-NODE_VERSION = "20.5.0"
+NODE_VERSION = "20.0.0"
 
 [env.production]
 node_compat = true
