@@ -1,5 +1,4 @@
-name = "kalsima-backend"
-main = "worker.js"
+name = "backend"
 
 [build]
 command = "npm run build"
