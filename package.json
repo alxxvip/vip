@@ -4,7 +4,7 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "build": "nitro build && node --no-warnings fix-dirname.js",
+    "build": "nitro build --preset cloudflare && node --no-warnings fix-dirname.js",
     "dev": "nitro dev",
     "prepare": "nitro prepare",
     "preview": "node .output/server/index.mjs"

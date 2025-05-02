@@ -5,7 +5,7 @@ import { version } from "./server/utils/config";
 //https://nitro.unjs.io/config
 export default defineNitroConfig({
   srcDir: "server",
-  preset: "cloudflare-pages",
+  preset: "cloudflare",
   output: {
     dir: ".output",
     publicDir: ".output/public"
