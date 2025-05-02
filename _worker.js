@@ -1,28 +1,30 @@
-// ملف العامل الرئيسي لـ Cloudflare Pages
+/**
+ * Archivo principal del worker para Cloudflare Workers
+ */
 
-// تكوين CORS
+// Configuración CORS
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization'
 };
 
-// مسارات API البسيطة
+// Rutas API básicas
 const routes = {
-  // الصفحة الرئيسية
+  // Página principal
   '/': () => ({
     message: 'Backend is working as expected',
     version: '1.0.0',
     timestamp: new Date().toISOString()
   }),
   
-  // فحص الصحة
+  // Verificación de salud
   '/healthcheck': () => ({
     status: 'ok',
     timestamp: new Date().toISOString()
   }),
   
-  // معلومات عن API
+  // Información API
   '/api': () => ({
     name: 'Kalsima Backend API',
     version: '1.0.0',
@@ -34,14 +36,14 @@ const routes = {
   })
 };
 
-// دالة للتعامل مع طلبات OPTIONS (preflight CORS)
+// Función para manejar solicitudes OPTIONS (preflight CORS)
 function handleOptions() {
   return new Response(null, {
     headers: corsHeaders
   });
 }
 
-// دالة للتعامل مع المسارات غير الموجودة
+// Función para manejar rutas no encontradas
 function handleNotFound(path) {
   return {
     error: 'Not Found',
@@ -50,27 +52,27 @@ function handleNotFound(path) {
   };
 }
 
-// تصدير دالة العامل
+// Exportar la función del worker
 export default {
   async fetch(request, env, ctx) {
     try {
-      // التعامل مع طلبات OPTIONS لـ CORS
+      // Manejar solicitudes OPTIONS para CORS
       if (request.method === 'OPTIONS') {
         return handleOptions();
       }
       
-      // الحصول على المسار
+      // Obtener la ruta
       const url = new URL(request.url);
       const path = url.pathname;
       
-      // البحث عن معالج المسار
+      // Buscar el manejador de ruta
       const handler = routes[path];
       const responseData = handler ? handler() : handleNotFound(path);
       
-      // تحديد حالة الاستجابة
+      // Determinar el estado de la respuesta
       const status = responseData.status || 200;
       
-      // إنشاء استجابة JSON
+      // Crear respuesta JSON
       return new Response(JSON.stringify(responseData), {
         status,
         headers: {
@@ -79,7 +81,7 @@ export default {
         }
       });
     } catch (error) {
-      // التعامل مع الأخطاء
+      // Manejar errores
       console.error('Worker error:', error);
       
       return new Response(JSON.stringify({

@@ -1,11 +1,100 @@
 // u0645u0644u0641 index.js u0641u064a u0645u062cu0644u062f workers-site u0644u0640 Cloudflare Workers
 
 // u0627u0633u062au064au0631u0627u062f _worker.js u0627u0644u0631u0626u064au0633u064a
-import worker from '../_worker.js';
+const worker = require('../_worker.js');
 
-// u062au0635u062fu064au0631 u062fu0627u0644u0629 fetch u0645u0646 u0627u0644u0639u0627u0645u0644 u0627u0644u0631u0626u064au0633u064a
-export default {
+// Configuración CORS
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+};
+
+// Rutas API básicas
+const routes = {
+  // Página principal
+  '/': () => ({
+    message: 'Backend is working as expected',
+    version: '1.0.0',
+    timestamp: new Date().toISOString()
+  }),
+  
+  // Verificación de salud
+  '/healthcheck': () => ({
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  }),
+  
+  // Información API
+  '/api': () => ({
+    name: 'Kalsima Backend API',
+    version: '1.0.0',
+    endpoints: [
+      { path: '/', description: 'API information' },
+      { path: '/healthcheck', description: 'Health check endpoint' },
+      { path: '/api', description: 'API documentation' }
+    ]
+  })
+};
+
+// Función para manejar solicitudes OPTIONS (preflight CORS)
+function handleOptions() {
+  return new Response(null, {
+    headers: corsHeaders
+  });
+}
+
+// Función para manejar rutas no encontradas
+function handleNotFound(path) {
+  return {
+    error: 'Not Found',
+    message: `Path ${path} not found`,
+    status: 404
+  };
+}
+
+// Exportar la función del worker
+module.exports = {
   async fetch(request, env, ctx) {
-    return worker.fetch(request, env, ctx);
+    try {
+      // Manejar solicitudes OPTIONS para CORS
+      if (request.method === 'OPTIONS') {
+        return handleOptions();
+      }
+      
+      // Obtener la ruta
+      const url = new URL(request.url);
+      const path = url.pathname;
+      
+      // Buscar el manejador de ruta
+      const handler = routes[path];
+      const responseData = handler ? handler() : handleNotFound(path);
+      
+      // Determinar el estado de la respuesta
+      const status = responseData.status || 200;
+      
+      // Crear respuesta JSON
+      return new Response(JSON.stringify(responseData), {
+        status,
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        }
+      });
+    } catch (error) {
+      // Manejar errores
+      console.error('Worker error:', error);
+      
+      return new Response(JSON.stringify({
+        error: 'Internal Server Error',
+        message: error.message
+      }), {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        }
+      });
+    }
   }
 };
