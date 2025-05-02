@@ -1,12 +1,22 @@
-[compatibility_flags]
-nodejs_compat = true
+name = "kalsima-backend"
+main = ".output/server/index.mjs"
 
 [build]
-node_version = "20.0.0"
-pages_build_output_dir = ".output/public"
+command = "npm run build"
+
+[site]
+bucket = ".output/public"
 
 [vars]
-NODE_VERSION = "20.0.0"
+NODE_VERSION = "20.5.0"
 
 [env.production]
 node_compat = true
+
+[triggers]
+crons = []
+
+[[kv_namespaces]]
+id = "e3d98bd235f38411b4cfefb2567578cf"
+preview_id = "e3d98bd235f38411b4cfefb2567578cf"
+binding = "KALSIMA_KV"
