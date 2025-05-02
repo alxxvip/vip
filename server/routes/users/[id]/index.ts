@@ -1,6 +1,6 @@
-import { useAuth } from '~/utils/auth';
+import { useAuth } from '../../../utils/auth';
 import { z } from 'zod';
-import { scopedLogger } from '~/utils/logger';
+import { scopedLogger } from '../../../utils/logger';
 
 const log = scopedLogger('user-profile');
 

@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { getMetrics, recordProviderMetrics } from '~/utils/metrics';
-import { scopedLogger } from '~/utils/logger';
-import { setupMetrics } from '~/utils/metrics';
+import { getMetrics, recordProviderMetrics } from '../../utils/metrics';
+import { scopedLogger } from '../../utils/logger';
+import { setupMetrics } from '../../utils/metrics';
 
 const log = scopedLogger('metrics-providers');
 

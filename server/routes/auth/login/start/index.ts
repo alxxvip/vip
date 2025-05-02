@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { useChallenge } from '~/utils/challenge';
+import { useChallenge } from '../../../../utils/challenge';
 
 const startSchema = z.object({
   publicKey: z.string(),

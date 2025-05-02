@@ -1,7 +1,7 @@
-import { useAuth } from '~/utils/auth';
+import { useAuth } from '../../../../utils/auth';
 import { z } from 'zod';
 import { randomUUID } from 'crypto';
-import { scopedLogger } from '~/utils/logger';
+import { scopedLogger } from '../../../../utils/logger';
 
 const log = scopedLogger('progress-import');
 

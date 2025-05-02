@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { useChallenge } from '~/utils/challenge';
-import { useAuth } from '~/utils/auth';
+import { useChallenge } from '../../../../utils/challenge';
+import { useAuth } from '../../../../utils/auth';
 
 const completeSchema = z.object({
   publicKey: z.string(),

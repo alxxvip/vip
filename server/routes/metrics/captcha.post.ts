@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { getMetrics, recordCaptchaMetrics } from '~/utils/metrics';
-import { scopedLogger } from '~/utils/logger';
-import { setupMetrics } from '~/utils/metrics';
+import { getMetrics, recordCaptchaMetrics } from '../../utils/metrics';
+import { scopedLogger } from '../../utils/logger';
+import { setupMetrics } from '../../utils/metrics';
 
 const log = scopedLogger('metrics-captcha');
 

@@ -1,4 +1,4 @@
-import { useAuth } from '~/utils/auth';
+import { useAuth } from '../../../../../utils/auth';
 import { z } from 'zod';
 import { randomUUID } from 'crypto';
 
