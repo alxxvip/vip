@@ -12,8 +12,10 @@ export default defineNitroConfig({
   },
   compatibilityDate: "2025-03-05",
   experimental: {
-    asyncContext: true,
+    asyncContext: true
   },
+  // تعطيل توافق Node.js لتجنب الخطأ
+  node: false,
   alias: {
     // Add aliases to avoid using __dirname directly
     '~': './server',
