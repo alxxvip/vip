@@ -1,98 +1,101 @@
-// u0645u0644u0641 index.js u0641u064a u0645u062cu0644u062f workers-site u0644u0640 Cloudflare Workers
+// workers-site/index.js
+// هذا الملف يعمل كنقطة دخول للتطبيق في Cloudflare Workers
 
-// u0627u0633u062au064au0631u0627u062f _worker.js u0627u0644u0631u0626u064au0633u064a
-const worker = require('../_worker.js');
-
-// Configuración CORS
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-};
-
-// Rutas API básicas
-const routes = {
-  // Página principal
-  '/': () => ({
-    message: 'Backend is working as expected',
-    version: '1.0.0',
-    timestamp: new Date().toISOString()
-  }),
-  
-  // Verificación de salud
-  '/healthcheck': () => ({
-    status: 'ok',
-    timestamp: new Date().toISOString()
-  }),
-  
-  // Información API
-  '/api': () => ({
-    name: 'Kalsima Backend API',
-    version: '1.0.0',
-    endpoints: [
-      { path: '/', description: 'API information' },
-      { path: '/healthcheck', description: 'Health check endpoint' },
-      { path: '/api', description: 'API documentation' }
-    ]
-  })
-};
-
-// Función para manejar solicitudes OPTIONS (preflight CORS)
-function handleOptions() {
-  return new Response(null, {
-    headers: corsHeaders
-  });
-}
-
-// Función para manejar rutas no encontradas
-function handleNotFound(path) {
-  return {
-    error: 'Not Found',
-    message: `Path ${path} not found`,
-    status: 404
-  };
-}
-
-// Exportar la función del worker
-module.exports = {
+/**
+ * استجابة للطلبات الواردة
+ * @param {Request} request - كائن الطلب
+ * @param {Object} env - متغيرات البيئة
+ * @param {Object} ctx - سياق التنفيذ
+ * @returns {Response} - استجابة للطلب
+ */
+export default {
   async fetch(request, env, ctx) {
     try {
-      // Manejar solicitudes OPTIONS para CORS
+      // إعدادات CORS
+      const corsHeaders = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      };
+
+      // التعامل مع طلبات OPTIONS
       if (request.method === 'OPTIONS') {
-        return handleOptions();
+        return new Response(null, {
+          headers: corsHeaders
+        });
       }
-      
-      // Obtener la ruta
+
+      // استخراج المسار من URL
       const url = new URL(request.url);
       const path = url.pathname;
-      
-      // Buscar el manejador de ruta
+
+      // تعريف المسارات المتاحة
+      const routes = {
+        '/': () => ({
+          message: 'Backend is working as expected',
+          version: '2.0.0',
+          timestamp: new Date().toISOString()
+        }),
+        '/healthcheck': () => ({
+          status: 'ok',
+          timestamp: new Date().toISOString()
+        }),
+        '/meta': () => ({
+          version: '2.0.0',
+          name: 'Kalsima Backend',
+          description: 'Backend service for Kalsima',
+          hasCaptcha: false,
+          captchaClientKey: ''
+        }),
+      };
+
+      // التحقق من وجود المسار المطلوب
       const handler = routes[path];
-      const responseData = handler ? handler() : handleNotFound(path);
       
-      // Determinar el estado de la respuesta
-      const status = responseData.status || 200;
-      
-      // Crear respuesta JSON
-      return new Response(JSON.stringify(responseData), {
-        status,
+      if (handler) {
+        // إذا وجد المسار، قم بتنفيذ الدالة المرتبطة به
+        const result = handler();
+        return new Response(JSON.stringify(result), {
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders
+          }
+        });
+      }
+
+      // إذا كان المسار يبدأ بـ /api، قم بتوجيهه إلى المسار المناسب
+      if (path.startsWith('/api')) {
+        return new Response(JSON.stringify({
+          message: 'API endpoint not implemented yet',
+          path: path
+        }), {
+          status: 501,
+          headers: {
+            'Content-Type': 'application/json',
+            ...corsHeaders
+          }
+        });
+      }
+
+      // إذا لم يتم العثور على المسار
+      return new Response(JSON.stringify({
+        error: 'Not Found',
+        path: path
+      }), {
+        status: 404,
         headers: {
           'Content-Type': 'application/json',
           ...corsHeaders
         }
       });
     } catch (error) {
-      // Manejar errores
-      console.error('Worker error:', error);
-      
+      // التعامل مع الأخطاء
       return new Response(JSON.stringify({
-        error: 'Internal Server Error',
-        message: error.message
+        error: error.message || 'Internal Server Error'
       }), {
         status: 500,
         headers: {
-          'Content-Type': 'application/json',
-          ...corsHeaders
+          'Content-Type': 'application/json'
         }
       });
     }

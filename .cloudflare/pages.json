@@ -1,10 +1,5 @@
 {
   "buildConfig": {
-    "nodeVersion": "20.5.0",
-    "rootDir": ".",
-    "command": "echo \"Using direct worker file\""
-  },
-  "workerConfig": {
-    "entrypoint": "_worker.js"
+    "nodeVersion": "20.5.0"
   }
 }

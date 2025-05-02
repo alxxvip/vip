@@ -1,34 +1,22 @@
 import { config } from "dotenv";
 config();
-// استخدام الإصدار من package.json مباشرة
-const version = process.env.npm_package_version || "1.0.0";
+import { version } from "./server/utils/config";
 
 //https://nitro.unjs.io/config
 export default defineNitroConfig({
   srcDir: "server",
   preset: "cloudflare-pages",
-  output: {
-    dir: ".output",
-    publicDir: ".output/public"
-  },
   compatibilityDate: "2025-03-05",
   experimental: {
-    asyncContext: true
+    asyncContext: true,
   },
-  // تعطيل توافق Node.js لتجنب الخطأ
+  // تعطيل استخدام Prisma في بيئة Cloudflare Workers
+  externals: {
+    // تجاهل حزم Prisma عند البناء
+    inline: ["@prisma/client"],
+  },
+  // تعطيل توافق Node.js لتجنب المشاكل
   node: false,
-  alias: {
-    // Add aliases to avoid using __dirname directly
-    '~': './server',
-    '@': './server'
-  },
-  routeRules: {
-    '/**': { cors: true }
-  },
-  // Configuración específica para Cloudflare
-  cloudflare: {
-    // Configuración para Cloudflare Pages
-  },
   runtimeConfig: {
     public: {
       meta: {
@@ -45,5 +33,5 @@ export default defineNitroConfig({
       clientId: process.env.TRAKT_CLIENT_ID,
       clientSecret: process.env.TRAKT_CLIENT_SECRET,
     },
-  }
+  },
 });
