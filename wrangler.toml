@@ -1,5 +1,5 @@
 name = "kalsima-backend"
-main = ".output/server/index.mjs"
+main = "worker.js"
 
 [build]
 command = "npm run build"

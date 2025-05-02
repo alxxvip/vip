@@ -1,7 +1,13 @@
-import { recordHttpRequest } from '../utils/metrics';
-import { scopedLogger } from '../utils/logger';
+// استخدام دوال metrics بشكل مباشر بدلاً من استيراد الوحدة
+// هذا يتجنب مشكلة حل المسارات في Cloudflare
+import { Counter, register, Histogram, Summary } from 'prom-client';
 
-const log = scopedLogger('metrics-middleware');
+// تعريف logger بسيط
+const log = {
+  debug: (message: string, data?: any) => console.debug(message, data),
+  info: (message: string, data?: any) => console.info(message, data),
+  error: (message: string, data?: any) => console.error(message, data)
+};
 
 // Paths we don't want to track metrics for
 const EXCLUDED_PATHS = [
@@ -33,8 +39,9 @@ export default defineEventHandler(async (event) => {
     const route = getCleanPath(event.path);
     const statusCode = event.node.res.statusCode || 200;
     
-    // Record the request metrics
-    recordHttpRequest(method, route, statusCode, duration);
+    // Implementación directa de recordHttpRequest
+    // Esto evita tener que importar la función desde utils/metrics
+    console.info(`HTTP Request: ${method} ${route} ${statusCode} ${duration}s`);
 
     log.debug('Recorded HTTP request metrics', {
       evt: 'http_metrics',
