@@ -1,4 +1,5 @@
 name = "backend"
+main = "workers-site/index.js"
 
 [build]
 command = "npm run build"
