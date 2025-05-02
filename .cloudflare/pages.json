@@ -1,5 +1,7 @@
 {
   "buildConfig": {
-    "nodeVersion": "20.5.0"
+    "nodeVersion": "20.5.0",
+    "rootDir": ".",
+    "command": "node build.js"
   }
 }

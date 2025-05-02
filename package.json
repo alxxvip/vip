@@ -1,4 +1,6 @@
 {
+  "name": "kalsima-backend",
+  "version": "1.0.0",
   "private": true,
   "engines": {
     "node": ">=20.0.0"
