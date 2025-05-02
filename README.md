@@ -1,59 +1,26 @@
-# Backend for Cloudflare Workers
+# Kalsima Backend
 
-## نظرة عامة
+[![Donate](https://img.shields.io/badge/Donate-GitHub%20Sponsors-PURPLE)](https://github.com/sponsors/Kalsima)
+[![Deploy](https://github.com/mohibalkal/backend/actions/workflows/deploy.yml/badge.svg)](https://github.com/mohibalkal/backend/actions/workflows/deploy.yml)
 
-هذا المشروع هو خدمة خلفية (Backend) مصممة للعمل على Cloudflare Workers. تم تبسيط المشروع وإعادة هيكلته ليعمل بشكل أفضل مع بيئة Cloudflare.
 
-## التكنولوجيا المستخدمة
+Kalsima Backend is a from scratch rewrite for the old Fastify and MikroOrm version with backwards compatibility!
 
-- **Nitro**: إطار عمل لبناء تطبيقات API بكفاءة عالية
-- **Node.js**: الإصدار 20.0.0 أو أعلى
-- **Cloudflare Workers**: لاستضافة ونشر التطبيق
+## Tech Stack
+This repo uses:
+- [Nitro](https://nitro.build)
+- [Prisma](https://pris.ly)
+- [Zod](https://zod.dev)
 
-## هيكل المشروع
+along with other minor libraries, we chose Nitro for its fast DX, easy support for caching, minimal design, and rapid prototyping. Prisma due to it's clear syntax, typesafety, and popularity. Zod for validation.
 
-```
-backend/
-├── .cloudflare/        # تكوينات Cloudflare
-├── server/            # كود الخادم
-│   ├── routes/       # مسارات API
-│   └── utils/        # أدوات مساعدة
-├── package.json      # تبعيات المشروع
-├── nitro.config.ts   # تكوين Nitro
-└── wrangler.toml     # تكوين Wrangler لـ Cloudflare
-```
+# Goals
+Since we've changed the codebase so much for better DX that comes with more changes!
+- [ ] Recommendations using ML models to provide accurate Recommendations via embeddings using a vector database
+- [x] Ratings, partly for the affirmentioned goal
+- [ ] Client wrapper library for any site that wants to keep user data related to movies, films, and recommendations
 
-## التثبيت والتشغيل
-
-1. تثبيت التبعيات:
-   ```
-   npm install
-   ```
-
-2. تشغيل الخادم محلياً للتطوير:
-   ```
-   npm run dev
-   ```
-
-3. بناء المشروع للإنتاج:
-   ```
-   npm run build
-   ```
-
-4. نشر المشروع على Cloudflare Workers:
-   ```
-   npx wrangler deploy
-   ```
-
-## نقاط النهاية API
-
-- **/**
-  - وصف: الصفحة الرئيسية تعرض رسالة ترحيبية وإصدار التطبيق
-  - طريقة: GET
-  - استجابة: `{ message: string }`
-
-## ملاحظات التطوير
-
-- تم تبسيط المشروع ليعمل بشكل أفضل مع Cloudflare Workers
-- تم استخدام Nitro بدلاً من الحل المخصص السابق
-- تم تحديث تكوينات wrangler.toml لتتوافق مع متطلبات Cloudflare
+## Minor information
+Only make PRs to `beta` branch
+Production deployments are [here](https://backend.kalsima.net)
+Beta deployments are [here](https://beta.backend.kalsima.net)

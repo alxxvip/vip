@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - main
 
 jobs:
   deploy:
@@ -14,18 +15,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.0.0'
+          node-version: '20'
       - name: Install dependencies
         run: npm ci
-      - name: Create workers-site directory
-        run: mkdir -p workers-site
-      - name: Copy _worker.js to workers-site/index.js
-        run: cp _worker.js workers-site/index.js
-      - name: Build
-        run: npm run build
-      - name: Publish to Cloudflare
+      - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: "e3d98bd235f38411b4cfefb2567578cf"
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
